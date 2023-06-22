@@ -4,24 +4,23 @@ return {
 		"nvim-telescope/telescope.nvim",
 		cmd = "Telescope",
 		keys = {
-			{ "<leader>f", "<Cmd>Telescope find_files<Cr>", desc = "Find files" },
-			{ "<leader>tf", "<Cmd>Telescope find_files<Cr>", desc = "Find files" },
-			{ "<leader>tg", "<Cmd>Telescope live_grep<Cr>", desc = "Live grep" }, -- Requires `ripgrep` to be installed.
-			{ "<leader>tb", "<Cmd>Telescope buffers<Cr>", desc = "Buffers" },
-			{ "<leader>tt", "<Cmd>Telescope treesitter<Cr>", desc = "Treesitter symbols" }, -- Requires `treesitter`.
-			{ "<leader>th", "<Cmd>Telescope help_tags<Cr>", desc = "Help tags" },
-			{ "<leader>ts", "<Cmd>Telescope lsp_document_symbols<Cr>", desc = "Document symbols" },
-			{ "<leader>tc", "<Cmd>Telescope commands<Cr>", desc = "Commands" },
-			{ "<leader>tm", "<Cmd>Telescope marks<Cr>", desc = "Marks" },
-			{ "<Leader>tp", "<Cmd>Telescope resume<Cr>", desc = "Resume last search" },
-			{ "<leader>mp", "<Cmd>Telescope planets<Cr>", desc = "Use the telescope" },
+			{ "<Leader>f",  "<CMD>Telescope find_files<CR>",           desc = "Find files" },
+			{ "<Leader>tf", "<CMD>Telescope find_files<CR>",           desc = "Find files" },
+			{ "<Leader>tg", "<CMD>Telescope live_grep<CR>",            desc = "Live grep" }, -- Requires `ripgrep` to be installed.
+			{ "<Leader>tb", "<CMD>Telescope buffers<CR>",              desc = "Buffers" },
+			{ "<Leader>tt", "<CMD>Telescope treesitter<CR>",           desc = "Treesitter symbols" }, -- Requires `treesitter`.
+			{ "<Leader>th", "<CMD>Telescope help_tags<CR>",            desc = "Help tags" },
+			{ "<Leader>ts", "<CMD>Telescope lsp_document_symbols<CR>", desc = "Document symbols" },
+			{ "<Leader>tc", "<CMD>Telescope commands<CR>",             desc = "Commands" },
+			{ "<Leader>tm", "<CMD>Telescope marks<CR>",                desc = "Marks" },
+			{ "<Leader>tp", "<CMD>Telescope resume<CR>",               desc = "Resume last search" },
 		},
 		dependencies = {
 			"nvim-lua/plenary.nvim", -- Common lua functions.
 			"nvim-telescope/telescope-fzf-native.nvim",
 			"tsakirist/telescope-lazy.nvim",
 			"nvim-treesitter/nvim-treesitter",
-			"dhruvmanila/browser-bookmarks.nvim",
+			"cljoly/telescope-repo.nvim",
 		},
 		config = function()
 			require("telescope").setup({
@@ -32,84 +31,40 @@ return {
 						ovveride_file_sorter = true,
 						case_mode = "smart_case",
 					},
-					bookmarks = {
-						selected_browser = "firefox",
-						profile_name = "default-release",
-						url_open_command = "xdg-open",
+					repo = {
+						list = {
+							file_ignore_patterns = { "/%.cache/", "/%.cargo/", "/share/" },
+						},
 					},
 				},
 			})
 			require("telescope").load_extension("fzf") -- telescope-fzf-native.nvim
 			require("telescope").load_extension("lazy") -- telescope-lazy.nvim
-			require("telescope").load_extension("bookmarks") -- browser-bookmarks.nvim
+			require("telescope").load_extension("repo") -- telescope-repo.nvim
 		end,
 	},
 	-- Fuzzy finder for `telescope.nvim`.
 	{
 		"nvim-telescope/telescope-fzf-native.nvim",
 		lazy = true,
-		build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
+		build = "make",
 	},
 	-- Telescope plugins installed by `lazy.nvim`.
 	{
 		"tsakirist/telescope-lazy.nvim",
-		cmd = "Telescope",
-		keys = { { "<Leader>tl", "<Cmd>Telescope lazy<Cr>", desc = "Lazy plugins" } },
+		keys = { { "<Leader>tl", "<CMD>Telescope lazy<CR>", desc = "Lazy plugins" } },
 		dependencies = {
 			"folke/lazy.nvim",
 		},
 	},
-	-- Quickly browse some predefined websites.
+	-- Browse local repositories (needs `locate` and `fd`).
 	{
-		"lalitmee/browse.nvim",
-		cmd = "Browse",
+		"cljoly/telescope-repo.nvim",
 		keys = {
-			{ "<Leader>ts", "<Cmd>Browse<Cr>", desc = "Show all browsing options" },
-			{ "<Leader>to", "<Cmd>BrowseBookmarks<Cr>", desc = "Search among bookmarks" },
-			{ "<Leader>i", "<Cmd>BrowseInputSearch<Cr>", desc = "Search the internet" },
+			{ "<Leader>tr", "<CMD>Telescope repo list<CR>", desc = "Browse repositories" },
 		},
-		dependencies = { "nvim-telescope/telescope.nvim" },
-		config = function()
-			local browse = require("browse")
-			local bookmarks = {
-				["GitHub"] = {
-					["name"] = "Search GitHub from neovim",
-					["Code search"] = "https://github.com/search?q=%s&type=code",
-					["Repo search"] = "https://github.com/search?q=%s&type=repositories",
-					["Issues search"] = "https://github.com/search?q=%s&type=issues",
-					["Pulls search"] = "https://github.com/search?q=%s&type=pullrequests",
-				},
-			}
-
-			browse.setup({
-				provider = "duckduckgo",
-				bookmarks = bookmarks,
-			})
-
-			-- Add some commands.
-			vim.api.nvim_create_user_command("Browse", function()
-				browse.browse()
-			end, { desc = "Show all browsing options" })
-			vim.api.nvim_create_user_command("BrowseBookmarks", function()
-				browse.open_bookmarks()
-			end, { desc = "Browse bookmarks" })
-			vim.api.nvim_create_user_command("BrowseInputSearch", function()
-				browse.input_search()
-			end, { desc = "Browse the general web" })
-		end,
-	},
-	-- Browse my browser bookmarks.
-	{
-		"dhruvmanila/browser-bookmarks.nvim",
-		cmd = "Telescope",
-		keys = { { "<Leader>td", "<Cmd>Telescope bookmarks<Cr>", desc = "Browser bookmarks" } },
 		dependencies = {
-			"kkharji/sqlite.lua", -- For firefox support, install `sqlite` and `sqlite-dev`.
-		},
-		opts = {
-			selected_browser = "firefox",
-			profile_name = "default-release",
-			url_open_command = "xdg-open",
+			"nvim-lua/plenary.nvim",
 		},
 	},
 }

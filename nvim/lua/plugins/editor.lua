@@ -1,15 +1,4 @@
 return {
-	-- Move quickly anywhere in the visible editor area.
-	{
-		"ggandor/leap.nvim",
-		keys = {
-			{
-				"<Leader>s",
-				"<Cmd>lua require('leap').leap({ target_windows = { vim.fn.win_getid() } })<Cr>",
-				desc = "Leap",
-			},
-		},
-	},
 	-- Better increment/decrement features.
 	{
 		"monaqa/dial.nvim",
@@ -37,11 +26,22 @@ return {
 	},
 	-- Comment lines and block of code.
 	{
-		"numToStr/Comment.nvim",
-		event = "VeryLazy",
-		config = true,
+		"echasnovski/mini.comment",
+		keys = {
+			{ "gc",  desc = "Comment line (visual mode)", mode = "v" },
+			{ "gcc", desc = "Comment line" },
+			{ "dgc", desc = "Delete comment textobject" },
+			{ "vgc", desc = "Select comment textobject" },
+		},
+		opts = {
+			mappings = {
+				comment = "gc",
+				comment_line = "gcc",
+				textobject = "gc",
+			},
+		},
 	},
-	-- Toggle terminals.
+	-- Toggle a virtual terminal.
 	{
 		"akinsho/toggleterm.nvim",
 		keys = { "<C-g>", desc = "Toggle the terminal" },
@@ -51,30 +51,73 @@ return {
 			shade_terminals = true,
 		},
 	},
+	-- Automatically change the project working directory when opening a new file.
+	{
+		"notjedi/nvim-rooter.lua",
+		cmd = { "Rooter", "RooterToggle" },
+		opts = {
+			manual = true,
+		},
+	},
 	-- File explorer.
 	{
 		"nvim-tree/nvim-tree.lua",
 		keys = {
-			{ "<leader>e", "<cmd>NvimTreeToggle<cr>", desc = "Open/close file explorer" },
+			{ "<Leader>e", "<CMD>NvimTreeToggle<CR>", desc = "Open/close file explorer" },
 		},
 		dependencies = {
 			"nvim-tree/nvim-web-devicons", -- File icons.
 		},
-		opts = {
-			view = {
-				mappings = {
-					list = {
-						{ key = "l", action = "edit" },
-					},
+		config = function()
+			local function on_attach(bufnr)
+				local api = require("nvim-tree.api")
+
+				api.config.mappings.default_on_attach(bufnr)
+
+				vim.keymap.set(
+					"n",
+					"l",
+					api.node.open.edit,
+					{ desc = "Open", buffer = bufnr, noremap = true, silent = true, nowait = true }
+				)
+			end
+
+			require("nvim-tree").setup({
+				on_attach = on_attach,
+				update_cwd = true,
+				update_focused_file = {
+					enable = true,
+					update_cwd = true,
 				},
-			},
-		},
+			})
+		end,
+	},
+	-- `Ranger` integration.
+	-- `pipx install ranger-fm`
+	{
+		"kelly-lin/ranger.nvim",
+		keys = {
+			{ "<Leader>r", "<CMD>lua require('ranger-nvim').open()<CR>", desc = "Open ranger" },
+		}, -- Unfortunately there's no easy way to load this plugin when entering a directory.
+		opts = { replace_netrw = true },
 	},
 	-- Autopairs.
 	{
-		"windwp/nvim-autopairs",
+		"echasnovski/mini.pairs",
 		event = "InsertEnter",
 		config = true,
+	},
+	-- Easy splits and joins.
+	{
+		"echasnovski/mini.splitjoin",
+		keys = {
+			{ "gS", desc = "Toggle split/join" },
+		},
+		opts = {
+			mappings = {
+				toggle = "gS",
+			},
+		},
 	},
 	-- More info when inspecting a character.
 	{
@@ -83,23 +126,12 @@ return {
 			{ "ga", desc = "Show character infos" },
 		},
 	},
-	-- Restore cursor to previous place.
+	-- Highlight and search for todo comments like TODO, HACK or BUG.
 	{
-		"farmergreg/vim-lastplace",
-	},
-	-- Better json and yaml support.
-	{
-		"gennaro-tedesco/nvim-jqx",
-		ft = { "json", "yaml" },
-	},
-	-- Better "w", "e", "b" moves.
-	{
-		"chrisgrieser/nvim-spider",
-		keys = {
-			{ "w", "<Cmd> lua require('spider').motion('w')<CR>", desc = "Spider-w" },
-			{ "e", "<Cmd> lua require('spider').motion('e')<CR>", desc = "Spider-e" },
-			{ "b", "<Cmd> lua require('spider').motion('b')<CR>", desc = "Spider-b" },
-			{ "ge", "<Cmd> lua require('spider').motion('ge')<CR>", desc = "Spider-ge" },
-		},
+		"folke/todo-comments.nvim",
+		cmd = { "TodoTelescope" },
+		event = "BufReadPre",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		config = true,
 	},
 }

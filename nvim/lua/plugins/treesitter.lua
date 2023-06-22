@@ -23,6 +23,7 @@ return {
 					"yaml",
 					"bash",
 					"vimdoc",
+					"norg",
 				},
 				-- Highlight based on treesitter.
 				highlight = { enable = true },
@@ -33,8 +34,8 @@ return {
 					enable = true,
 					keymaps = {
 						init_selection = "gn",
-						node_incremental = "<Tab>",
-						node_decremental = "<S-Tab>",
+						node_incremental = "<TAB>",
+						node_decremental = "<S-TAB>",
 						scope_incremental = false,
 					},
 				},
@@ -111,18 +112,6 @@ return {
 			vim.opt.foldmethod = "expr"
 			vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 		end,
-	},
-	-- Annotation toolkit.
-	{
-		"danymat/neogen",
-		cmd = "Neogen",
-		keys = {
-			{ "<Leader>lc", "<CMD>Neogen<CR>", desc = "Add comments" },
-		},
-		dependencies = "nvim-treesitter/nvim-treesitter",
-		opts = {
-			snippet_engine = "luasnip",
-		},
 	},
 	-- Enhanced folding.
 	{

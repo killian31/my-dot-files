@@ -4,6 +4,9 @@ return {
 		ft = "norg",
 		cmd = "Neorg",
 		build = ":Neorg sync-parsers",
+		keys = {
+			{ "<LocalLeader>c", ":Neorg toggle-concealer<CR>", desc = "Toggle conceiler" },
+		},
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"nvim-treesitter/nvim-treesitter",
@@ -15,9 +18,9 @@ return {
 				-- Loads default behaviour.
 				["core.defaults"] = {},
 				-- Adds pretty icons to your documents.
-				["core.norg.concealer"] = {},
+				["core.concealer"] = {},
 				-- Manages Neorg workspaces.
-				["core.norg.dirman"] = {
+				["core.dirman"] = {
 					config = {
 						workspaces = {
 							notes = "~/my-notes/",
@@ -25,7 +28,7 @@ return {
 					},
 				},
 				-- Add completion support.
-				["core.norg.completion"] = {
+				["core.completion"] = {
 					config = {
 						engine = "nvim-cmp",
 					},
@@ -37,6 +40,7 @@ return {
 						zen_mode = "zen-mode",
 					},
 				},
+				["core.export"] = {},
 			},
 		},
 	},

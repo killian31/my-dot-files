@@ -3,7 +3,7 @@ return {
 	{
 		"stevearc/dressing.nvim",
 		event = "VeryLazy",
-		enabled = false,
+		enabled = true,
 	},
 	-- Classic vim theme.
 	{
@@ -13,8 +13,8 @@ return {
 		lazy = false,
 		priority = 1000,
 		config = function()
-			vim.opt.termguicolors = true -- Activate terminal colors.
-			vim.opt.background = "dark" -- Global theme.
+			vim.opt.termguicolors = true            -- Activate terminal colors.
+			vim.opt.background = "dark"             -- Global theme.
 			vim.g.gruvbox_material_background = "hard" -- Either "hard", "medium" or "soft".
 			vim.g.gruvbox_material_better_performance = 1
 			vim.cmd("colorscheme gruvbox-material")
@@ -30,9 +30,10 @@ return {
 	-- Nice colorschemes.
 	{
 		"catppuccin/nvim",
+		enabled = false,
 		lazy = false,
 		priority = 1000,
-		dependencies = { "bluz71/nvim-linefly" },
+		dependencies = { "bluz71/nvim-linefly", "shaun-mathew/Chameleon.nvim" },
 		config = function()
 			require("catppuccin").setup({
 				flavour = "mocha", -- latte, frappe, macchiato, mocha
@@ -95,11 +96,33 @@ return {
 			highlight(0, "LineflyReplace", { link = "ErrorMsg" })
 		end,
 	},
-	-- Show git signs.
+	-- GitHub theme.
 	{
-		"lewis6991/gitsigns.nvim",
-		event = "VeryLazy",
-		config = true,
+		"projekt0n/github-nvim-theme",
+		enabled = false,
+		lazy = false,  -- make sure we load this during startup if it is your main colorscheme
+		priority = 1000, -- make sure to load this before all the other start plugins
+		config = function()
+			require("github-theme").setup({
+				groups = {
+					github_dark_tritanopia = {
+						PmenuSbar = { fg = "white" },
+					},
+				},
+			})
+
+			vim.cmd("colorscheme github_dark_tritanopia")
+		end,
+	},
+	-- Dark green theme.
+	{
+		"ribru17/bamboo.nvim",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			require("bamboo").setup()
+			require("bamboo").load()
+		end,
 	},
 	-- Dynamically show keybindings.
 	{
@@ -110,19 +133,19 @@ return {
 			vim.opt.timeoutlen = 300
 			require("which-key").setup()
 			require("which-key").register({
-				["<leader>v"] = { name = "+Neovim" },
-				["<leader>p"] = { name = "+Panels" },
-				["<leader>t"] = { name = "+Telescope" },
-				["<leader>d"] = { name = "+Debugger" },
-				["<leader>l"] = { name = "+LSP" },
-				["<leader>m"] = { name = "+Misc" },
+				["<Leader>v"] = { name = "+Neovim" },
+				["<Leader>p"] = { name = "+Panels" },
+				["<Leader>t"] = { name = "+Telescope" },
+				["<Leader>d"] = { name = "+Debugger" },
+				["<Leader>l"] = { name = "+LSP" },
+				["gc"] = { name = "+Comment" },
 			})
 		end,
 	},
 	-- Status line.
 	{
 		"bluz71/nvim-linefly",
-		event = "VeryLazy",
+		lazy = false,
 		dependencies = { "nvim-tree/nvim-web-devicons" }, -- More icons.
 		config = function()
 			vim.g.linefly_options = {
@@ -285,13 +308,13 @@ $$ | \$$ |\$$$$$$$\ \$$$$$$  |  \$  /   $$ |$$ | $$ | $$ |
 			local logo = logos[math.random(#logos)] .. "\n" .. welcome_msgs[math.random(#welcome_msgs)]
 			dashboard.section.header.val = vim.split(logo, "\n")
 			dashboard.section.buttons.val = {
-				dashboard.button("f", " " .. " Find file", ":Telescope find_files <CR>"),
-				dashboard.button("n", " " .. " New file", ":ene <BAR> startinsert <CR>"),
-				dashboard.button("r", " " .. " Recent files", ":Telescope oldfiles <CR>"),
-				dashboard.button("g", " " .. " Find text", ":Telescope live_grep <CR>"),
-				dashboard.button("c", " " .. " Config", ":e $MYVIMRC <CR>"),
-				dashboard.button("s", "勒" .. " Restore Session", [[:lua require("persistence").load() <cr>]]),
-				dashboard.button("l", "鈴" .. " Lazy", ":Lazy<CR>"),
+				dashboard.button("n", " " .. " New file", ":ene <BAR> startinsert<CR>"),
+				dashboard.button("p", " " .. " Projects", ":Telescope repo list<CR>"),
+				dashboard.button("r", "󱋡 " .. " Recent files", ":Telescope oldfiles<CR>"),
+				dashboard.button("f", "󰈢 " .. " Find file", ":Telescope find_files<CR>"),
+				dashboard.button("g", "󰺮 " .. " Find text", ":Telescope live_grep<CR>"),
+				dashboard.button("c", " " .. " Config", ":e $MYVIMRC<CR>"),
+				dashboard.button("l", "󰒲 " .. " Lazy", ":Lazy<CR>"),
 				dashboard.button("q", " " .. " Quit", ":qa<CR>"),
 			}
 			for _, button in ipairs(dashboard.section.buttons.val) do

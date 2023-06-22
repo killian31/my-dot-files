@@ -1,29 +1,19 @@
 #!/bin/sh
 
-wd=$(pwd)
+load_rc="
+# Loading my .bashrc.d files
+. $HOME/.bashrc.d/main.sh
+"
 
-echo "
-# >>>> Loading my .bashrc.d files
-if [ -d ~/.bashrc.d ]; then
-	for rc in ~/.bashrc.d/*; do
-		if [ -f \"\$rc\" ]; then
-			. \"\$rc\"
-		fi
-	done
+# Check if .bashrc is not already contains load_rc
+if ! grep -q "Loading my .bashrc.d files" "$HOME/.bashrc"; then
+    echo "Add load_rc to .bashrc"
+    echo "$load_rc" >> "$HOME/.bashrc"
 fi
 
-unset rc
-# <<<<" >> "$HOME/.bashrc"
-
-echo "Create .bashrc.d directory"
+echo "Copy .bashrc.d directory"
 rm -rf "$HOME/.bashrc.d/"
 mkdir -p "$HOME/.bashrc.d"
+cp ./.bashrc.d/* "$HOME/.bashrc.d/"
 
-echo "Create symlinks"
-for file in ./.bashrc.d/*; do
-    if [ -f "$file" ]; then
-        file=$(basename "$file")
-        echo "$file"
-        ln -s "$wd/.bashrc.d/$file" "$HOME/.bashrc.d/$file"
-    fi
-done
+echo "Done!"

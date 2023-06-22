@@ -8,7 +8,7 @@ return {
 			{ "gd", "<Cmd>lua vim.lsp.buf.definition()<Cr>", desc = "Go to definition" },
 			{
 				"gs",
-				"<Cmd>lua vim.lsp.buf.signature_help()<Cr>",
+				"<CMD>lua vim.lsp.buf.signature_help()<CR>",
 				desc = "Show signature help",
 			},
 			{ "gr", "<Cmd>lua vim.lsp.buf.rename()<Cr>", desc = "Rename symbol" },
@@ -27,7 +27,6 @@ return {
 			lspconfig["pyright"].setup({})
 			lspconfig["lua_ls"].setup({})
 			lspconfig["marksman"].setup({})
-			lspconfig["rust_analyzer"].setup({})
 
 			-- Bind the `lsp_signature` to those LSP servers.
 			local signature_opts = {
@@ -36,33 +35,43 @@ return {
 				handler_opts = { border = "rounded" },
 				hint_enable = false,
 				wrap = false,
+				hi_parameter = "Search",
 			}
 			require("lsp_signature").setup(signature_opts)
 
-			--Toggle signatures.
-			local show_signature = signature_opts.floating_window
-			vim.keymap.set("n", "<leader>lp", function()
-				show_signature = not show_signature
+			-- Deactivate all LSP clients.
+			local deactivate_lsp = function()
+				vim.lsp.stop_client(vim.lsp.get_active_clients())
+				print("LSP clients deactivated.")
+			end
+			vim.keymap.set("n", "<Leader>ll", deactivate_lsp, { desc = "Deactivate LSP" })
+
+			-- Toggle signatures.
+			local show_signatures = signature_opts.floating_window
+			local toggle_signatures = function()
+				show_signatures = not show_signatures
 				require("lsp_signature").toggle_float_win()
-				if show_signature then
-					print("Signature activated.")
+				if show_signatures then
+					print("Signatures activated.")
 				else
-					print("Signature hidden.")
+					print("Signatures hidden.")
 				end
-			end, { desc = "Toggle signature hints" })
+			end
+			vim.keymap.set("n", "<Leader>lp", toggle_signatures, { desc = "Toggle signature hints" })
 
 			-- Toggle diagnostics.
-			local show_diagnostic = true
-			vim.keymap.set("n", "<leader>ld", function()
-				show_diagnostic = not show_diagnostic
-				if show_diagnostic then
+			local show_diagnostics = true
+			local toggle_diagnostics = function()
+				show_diagnostics = not show_diagnostics
+				if show_diagnostics then
 					vim.diagnostic.enable()
 					print("Diagnostics activated.")
 				else
 					vim.diagnostic.disable()
 					print("Diagnostics hidden.")
 				end
-			end, { desc = "Toggle diagnostics" })
+			end
+			vim.keymap.set("n", "<Leader>ld", toggle_diagnostics, { desc = "Toggle diagnostics" })
 		end,
 	},
 	-- Hook code actions, diagnostics, formatting, completion...
@@ -70,7 +79,7 @@ return {
 		"jose-elias-alvarez/null-ls.nvim",
 		event = "BufReadPre",
 		keys = {
-			{ "<leader>pn", "<CMD>NullLsInfo<CR>", desc = "Null-ls" },
+			{ "<Leader>pn", "<CMD>NullLsInfo<CR>", desc = "Null-ls" },
 		},
 		dependencies = {
 			"williamboman/mason.nvim",
@@ -84,11 +93,11 @@ return {
 				null_ls.builtins.code_actions.proselint,
 				-- Python.
 				null_ls.builtins.formatting.black,
-				null_ls.builtins.diagnostics.flake8.with({
-					extra_args = { "--max-line-length=88", "--extend-ignore=E203" }, -- Black configuration.
-				}),
 				null_ls.builtins.formatting.isort.with({
 					extra_args = { "--profile=black" }, -- Black configuration.
+				}),
+				null_ls.builtins.diagnostics.ruff.with({
+					extra_args = { "--ignore E501" }, -- Ignore line length.
 				}),
 				-- Lua.
 				null_ls.builtins.formatting.stylua,
@@ -101,7 +110,6 @@ return {
 				null_ls.builtins.formatting.markdownlint,
 				-- JSON & YAML.
 				null_ls.builtins.formatting.jq,
-				null_ls.builtins.formatting.yamlfmt,
 				null_ls.builtins.diagnostics.yamllint,
 				null_ls.builtins.diagnostics.rstcheck,
 			}
@@ -119,7 +127,7 @@ return {
 		"williamboman/mason.nvim",
 		cmd = "Mason",
 		keys = {
-			{ "<leader>pm", "<cmd>Mason<cr>", desc = "Mason" },
+			{ "<Leader>pm", "<CMD>Mason<CR>", desc = "Mason" },
 		},
 		config = true,
 	},
@@ -132,29 +140,13 @@ return {
 		},
 		opts = { automatic_installation = true },
 	},
-	-- Show a tree-like view of file symbols.
-	{
-		"simrat39/symbols-outline.nvim",
-		cmd = "SymbolsOutline",
-		keys = {
-			{ "<Leader>lo", "<Cmd>SymbolsOutline<Cr>", desc = "Show symbols outline" },
-		},
-		config = true,
-	},
 	-- Eye candy nvim-lsp progress.
 	{
 		"j-hui/fidget.nvim",
+		tag = "legacy",
 		dependencies = "neovim/nvim-lspconfig",
 		opts = {
 			window = { blend = 0 },
-		},
-	},
-	-- Lightbulb to indicate a code action.
-	{
-		"kosayoda/nvim-lightbulb",
-		lazy = true,
-		opts = {
-			autocmd = { enabled = true },
 		},
 	},
 }
