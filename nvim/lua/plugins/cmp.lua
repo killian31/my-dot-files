@@ -6,8 +6,8 @@ return {
 		dependencies = {
 			"neovim/nvim-lspconfig",
 			"hrsh7th/cmp-nvim-lsp", -- Handle `nvim-cmp` interactions with neovim's LSP.
-			"hrsh7th/cmp-path", -- Filesystem paths source for completion.
-			"hrsh7th/cmp-calc", -- Replace simple computations with their results.
+			"hrsh7th/cmp-path",    -- Filesystem paths source for completion.
+			"hrsh7th/cmp-calc",    -- Replace simple computations with their results.
 			"lukas-reineke/cmp-rg", -- Use results from `ripgrep` as a source.
 			"zbirenbaum/copilot-cmp", -- Copilot source.
 		},
@@ -28,7 +28,7 @@ return {
 				unpack = unpack or table.unpack
 				local line, col = unpack(vim.api.nvim_win_get_cursor(0))
 				return col ~= 0
-					and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+						and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 			end
 
 			local kind_icons = {
@@ -125,7 +125,7 @@ return {
 					comparators = {
 						-- This ensure that poor Copilot matches do not prioritize
 						-- other sources.
-						require("copilot_cmp.comparators").prioritize,
+						-- require("copilot_cmp.comparators").prioritize,
 						-- Below is the default comparitor list and order for nvim-cmp
 						cmp.config.compare.offset,
 						-- cmp.config.compare.scopes, --this is commented in nvim-cmp too

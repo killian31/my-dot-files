@@ -10,8 +10,8 @@ return {
 		},
 		opts = {
 			suggestion = {
-				enabled = false,
-				auto_trigger = false, -- Start suggesting as soon as you start typing.
+				enabled = true,
+				auto_trigger = true, -- Start suggesting as soon as you start typing.
 				keymap = {
 					accept = "<M-h>",
 					accept_word = "<M-l>",
@@ -29,7 +29,7 @@ return {
 	-- Add Copilot as a source to `nvim-cmp`.
 	{
 		"zbirenbaum/copilot-cmp",
-		enabled = false,
+		enabled = true,
 		dependencies = "zbirenbaum/copilot.lua",
 		config = function()
 			require("copilot_cmp").setup({
