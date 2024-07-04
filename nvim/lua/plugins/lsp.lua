@@ -5,20 +5,20 @@ return {
 		event = "BufReadPre",
 		keys = {
 			{ "gl", "<Cmd>lua vim.diagnostic.open_float(nil, {focus=false})<Cr>", desc = "Show diagnostics" },
-			{ "gd", "<Cmd>lua vim.lsp.buf.definition()<Cr>", desc = "Go to definition" },
+			{ "gd", "<Cmd>lua vim.lsp.buf.definition()<Cr>",                      desc = "Go to definition" },
 			{
 				"gs",
 				"<CMD>lua vim.lsp.buf.signature_help()<CR>",
 				desc = "Show signature help",
 			},
-			{ "gr", "<Cmd>lua vim.lsp.buf.rename()<Cr>", desc = "Rename symbol" },
+			{ "gr",         "<Cmd>lua vim.lsp.buf.rename()<Cr>",      desc = "Rename symbol" },
 			{ "<Leader>la", "<Cmd>lua vim.lsp.buf.code_action()<Cr>", desc = "Show code action" },
 		},
 		dependencies = {
 			"williamboman/mason.nvim",
 			{ "williamboman/mason-lspconfig.nvim", opts = { automatic_installation = true } }, -- Make it easier to use `mason` with `lspconfig`.
-			{ "folke/neodev.nvim", config = true }, -- Add neovim library support for `sumneko_lua`.
-			"ray-x/lsp_signature.nvim", -- Show function signatures.
+			{ "folke/neodev.nvim",                 config = true },                         -- Add neovim library support for `sumneko_lua`.
+			"ray-x/lsp_signature.nvim",                                                     -- Show function signatures.
 		},
 		config = function()
 			local lspconfig = require("lspconfig")
@@ -131,14 +131,14 @@ return {
 		},
 		config = true,
 	},
-	-- Automatically install Null-ls sources using Mason.
+	-- Automatically install Null-ls sources using Mason, but no printing.
 	{
 		"jay-babu/mason-null-ls.nvim",
 		dependencies = {
 			"williamboman/mason.nvim",
 			"jose-elias-alvarez/null-ls.nvim",
 		},
-		opts = { automatic_installation = true },
+		--opts = { automatic_installation = true, print_output = false },
 	},
 	-- Eye candy nvim-lsp progress.
 	{
