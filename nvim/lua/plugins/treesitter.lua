@@ -4,6 +4,7 @@ return {
 	{
 		"nvim-treesitter/nvim-treesitter",
 		event = "BufReadPost",
+		version = "v0.9.3",
 		keys = {
 			{ "gR", desc = "Smart rename" },
 		},
@@ -28,7 +29,7 @@ return {
 				-- Highlight based on treesitter.
 				highlight = { enable = true },
 				-- Indentation based on treesitter.
-				ident = { enable = true },
+				indent = { enable = true },
 				-- Incremental selection in the parsed tree.
 				incremental_selection = {
 					enable = true,

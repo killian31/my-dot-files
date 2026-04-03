@@ -44,12 +44,10 @@ alias sl=ls
 alias kk=ll
 
 # Bashrc
-alias bashrc="vim ~/.bashrc && source ~/.bashrc"
+alias bashrc="nvim ~/.bashrc && source ~/.bashrc"
 
 # Replace old commands with new ones
-if command -v nvim > /dev/null 2>&1; then
-    alias vim=nvim  # nvim is better
-fi
+alias vim=nvim
 if command -v htop > /dev/null 2>&1; then
     alias top=htop
 fi

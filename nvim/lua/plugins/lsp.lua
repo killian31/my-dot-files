@@ -21,12 +21,11 @@ return {
 			"ray-x/lsp_signature.nvim",                                                     -- Show function signatures.
 		},
 		config = function()
-			local lspconfig = require("lspconfig")
-
-			-- Load LSP servers.
-			lspconfig["pyright"].setup({})
-			lspconfig["lua_ls"].setup({})
-			lspconfig["marksman"].setup({})
+			-- Load LSP servers using the Neovim 0.11+ API.
+			vim.lsp.config("pyright", {})
+			vim.lsp.config("lua_ls", {})
+			vim.lsp.config("marksman", {})
+			vim.lsp.enable({ "pyright", "lua_ls", "marksman" })
 
 			-- Bind the `lsp_signature` to those LSP servers.
 			local signature_opts = {
@@ -76,7 +75,7 @@ return {
 	},
 	-- Hook code actions, diagnostics, formatting, completion...
 	{
-		"jose-elias-alvarez/null-ls.nvim",
+		"nvimtools/none-ls.nvim",
 		event = "BufReadPre",
 		keys = {
 			{ "<Leader>pn", "<CMD>NullLsInfo<CR>", desc = "Null-ls" },

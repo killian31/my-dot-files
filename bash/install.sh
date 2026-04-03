@@ -1,19 +1,55 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
-load_rc="
-# Loading my .bashrc.d files
-. $HOME/.bashrc.d/main.sh
-"
+set -eu
 
-# Check if .bashrc is not already contains load_rc
-if ! grep -q "Loading my .bashrc.d files" "$HOME/.bashrc"; then
-    echo "Add load_rc to .bashrc"
-    echo "$load_rc" >> "$HOME/.bashrc"
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+SOURCE_DIR="$SCRIPT_DIR/.bashrc.d"
+TARGET_DIR="$HOME/.bashrc.d"
+TARGET_RC="$HOME/.bashrc"
+
+backup_path() {
+    path="$1"
+    if [ -e "$path" ] || [ -L "$path" ]; then
+        stamp=$(date +%Y%m%d-%H%M%S)
+        mv "$path" "$path.bak.$stamp"
+        echo "Backed up $path to $path.bak.$stamp"
+    fi
+}
+
+link_path() {
+    src="$1"
+    dst="$2"
+
+    mkdir -p "$(dirname "$dst")"
+
+    if [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ]; then
+        return
+    fi
+
+    if [ -e "$dst" ] || [ -L "$dst" ]; then
+        backup_path "$dst"
+    fi
+
+    ln -s "$src" "$dst"
+}
+
+if [ ! -f "$TARGET_RC" ]; then
+    touch "$TARGET_RC"
 fi
 
-echo "Copy .bashrc.d directory"
-rm -rf "$HOME/.bashrc.d/"
-mkdir -p "$HOME/.bashrc.d"
-cp ./.bashrc.d/* "$HOME/.bashrc.d/"
+echo "Installing bash config files..."
+link_path "$SOURCE_DIR" "$TARGET_DIR"
 
-echo "Done!"
+if ! grep -q "my-dot-files bash" "$TARGET_RC"; then
+    cat >> "$TARGET_RC" <<'EOF'
+
+# >>> my-dot-files bash >>>
+if [ -f "$HOME/.bashrc.d/main.sh" ]; then
+    . "$HOME/.bashrc.d/main.sh"
+fi
+# <<< my-dot-files bash <<<
+EOF
+    echo "Added dotfiles loader to $TARGET_RC"
+fi
+
+echo "Done"
