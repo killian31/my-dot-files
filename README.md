@@ -12,6 +12,24 @@ This guide is a repeatable playbook to reinstall everything on a fresh machine.
 - Target OS: Ubuntu 24.04+
 - Main entrypoint: `./install.sh`
 - Default installed modules: `bash` and `nvim`
+- Repository: `https://github.com/killian31/my-dot-files.git`
+
+## One-command bootstrap (after clone)
+
+From the repository root:
+
+```sh
+./bootstrap-ubuntu.sh
+```
+
+Optional flags:
+
+```sh
+./bootstrap-ubuntu.sh --minimal
+./bootstrap-ubuntu.sh --help
+```
+
+`--minimal` skips extra formatter/linter packages.
 
 ## Fast Reinstall (copy/paste)
 
@@ -43,7 +61,7 @@ mkdir -p ~/.local/bin
 ln -sf "$(command -v fdfind)" ~/.local/bin/fd
 
 # 6) Clone and install dotfiles
-git clone <your-dotfiles-repo-url> ~/github/my-dot-files
+git clone https://github.com/killian31/my-dot-files.git ~/github/my-dot-files
 cd ~/github/my-dot-files
 ./install.sh
 
